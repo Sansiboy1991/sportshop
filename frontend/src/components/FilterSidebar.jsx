@@ -1,47 +1,71 @@
-export default function FilterSidebar({ categories = [], brands = [], onFilterChange }) {
+export default function FilterSidebar({ filters, setFilters, categories, brands }) {
+  const handleChange = (name, value) => {
+    setFilters((prev) => ({
+      ...prev,
+      [name]: value || "",
+    }));
+  };
+
   return (
-    <aside className="hidden lg:block w-64 h-screen overflow-y-auto bg-white border-r border-gray-200 shadow-sm p-4">
-      <div>
-        <h3 className="text-gray-800 font-semibold border-b pb-2 mb-3">Категорії</h3>
-        <ul className="space-y-1">
+    <div className="p-4 h-full overflow-y-auto">
+      <h2 className="font-semibold text-gray-700 mb-4 text-lg">Фільтри</h2>
+
+      {/* Категорії */}
+      <div className="mb-6">
+        <h3 className="font-medium text-gray-600 mb-2">Категорія</h3>
+        <select
+          className="w-full border rounded-lg px-3 py-2"
+          value={filters.categoryId || ""}
+          onChange={(e) => handleChange("categoryId", e.target.value)}
+        >
+          <option value="">Всі</option>
           {categories.map((c) => (
-            <li
-              key={c.id}
-              onClick={() => onFilterChange({ categoryId: c.id })}
-              className="px-2 py-1 rounded-md text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 cursor-pointer"
-            >
+            <option key={c.id} value={c.id}>
               {c.name}
-            </li>
+            </option>
           ))}
-        </ul>
+        </select>
       </div>
 
-      <div className="mt-6">
-        <h3 className="text-gray-800 font-semibold border-b pb-2 mb-3">Бренди</h3>
-        <ul className="space-y-1">
+      {/* Бренди */}
+      <div className="mb-6">
+        <h3 className="font-medium text-gray-600 mb-2">Бренд</h3>
+        <select
+          className="w-full border rounded-lg px-3 py-2"
+          value={filters.brand || ""}
+          onChange={(e) => handleChange("brand", e.target.value)}
+        >
+          <option value="">Всі</option>
           {brands.map((b) => (
-            <li
-              key={b}
-              onClick={() => onFilterChange({ brand: b })}
-              className="px-2 py-1 rounded-md text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 cursor-pointer"
-            >
+            <option key={b} value={b}>
               {b}
-            </li>
+            </option>
           ))}
-        </ul>
+        </select>
       </div>
 
-      <div className="mt-6 flex items-center space-x-2">
-        <input
-          id="available"
-          type="checkbox"
-          onChange={(e) => onFilterChange({ available: e.target.checked })}
-          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-        />
-        <label htmlFor="available" className="text-sm text-gray-700">
-          Лише в наявності
+      {/* Наявність */}
+      <div className="mb-6">
+        <h3 className="font-medium text-gray-600 mb-2">Наявність</h3>
+        <label className="flex items-center gap-2 text-sm text-gray-700">
+          <input
+            type="checkbox"
+            checked={filters.available === true}
+            onChange={(e) =>
+              handleChange("available", e.target.checked ? true : "")
+            }
+          />
+          Тільки в наявності
         </label>
       </div>
-    </aside>
+
+      {/* Очистити */}
+      <button
+        onClick={() => setFilters({})}
+        className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg py-2 mt-4"
+      >
+        Очистити фільтри
+      </button>
+    </div>
   );
 }

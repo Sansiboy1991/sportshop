@@ -18,29 +18,38 @@ export function groupProducts(products) {
   const grouped = new Map();
 
   for (const p of products) {
-    const key = `${baseTitle(p.title)}|${p.brand.toLowerCase()}|${p.categoryId}`;
+    // 1️⃣ Чистимо назву від усього після " - "
+    let baseName = p.title.split(" - ")[0].trim().toLowerCase();
+
+    // 2️⃣ Альтернативно: якщо назва містить вагу (1000g, 1kg, 500g тощо) — відкидаємо її
+    baseName = baseName.replace(/\b\d+(g|гр|kg|ml|капсул|таб)\b/gi, "").trim();
+
+    // 3️⃣ Формуємо ключ групи
+    const key = `${baseName}|${p.brand.toLowerCase()}|${p.categoryId}`;
+
+    // 4️⃣ Якщо групи ще немає — створюємо
     if (!grouped.has(key)) {
       grouped.set(key, {
-        id: key, // можна потім захешувати/зробити slug
-        title: baseTitle(p.title), // базова назва
+        id: key,
+        title: baseName,
         brand: p.brand,
         categoryId: p.categoryId,
-        description: p.description, // перший опис як базовий
+        description: p.description,
         image: p.image,
         images: p.images,
-        // агрегати
         minPrice: p.price || 0,
-        anyAvailable: !!p.available,
+        anyAvailable: p.available,
         variants: []
       });
     }
 
+    // 5️⃣ Додаємо варіант у групу
     const g = grouped.get(key);
     g.variants.push({
       id: p.vendorCode,
-      flavor: p.attrs["смак"] || p.attrs["вкус"] || "",     // різні фіди можуть мати "вкус"
-      weight: p.attrs["фасування"] || p.attrs["вес"] || "",
-      type:   p.attrs["тип"] || "",
+      fullTitle: p.title,
+      flavor: p.flavor || p.attrs["смак"] || p.attrs["вкус"] || "",
+      weight: p.weight || p.attrs["фасування"] || p.attrs["вес"] || "",
       price: p.price,
       available: p.available,
       image: p.image
@@ -50,7 +59,7 @@ export function groupProducts(products) {
     if (p.available) g.anyAvailable = true;
   }
 
-  // сортуємо варіанти: доступні → недоступні
+  // 6️⃣ Сортуємо варіанти — доступні зверху
   for (const g of grouped.values()) {
     g.variants.sort((a, b) => Number(b.available) - Number(a.available));
   }

@@ -1,54 +1,48 @@
 export default function ProductCard({ product }) {
   return (
-    <div className="group relative flex flex-col bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
-      {/* бейдж */}
-      {product.available ? (
-        <span className="absolute top-3 left-3 bg-green-100 text-green-700 text-xs font-semibold px-2 py-1 rounded-full">
-          В наявності
-        </span>
-      ) : (
-        <span className="absolute top-3 left-3 bg-red-100 text-red-600 text-xs font-semibold px-2 py-1 rounded-full">
-          Немає
-        </span>
-      )}
+    <div
+      style={{
+        border: "1px solid #ddd",
+        borderRadius: "10px",
+        padding: "10px",
+        textAlign: "center",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+        opacity: product.available ? 1 : 0.5,
+        position: "relative",
+      }}
+    >
+      <img
+        src={product.image}
+        alt={product.title}
+        style={{
+          width: "100%",
+          height: "180px",
+          objectFit: "cover",
+          borderRadius: "8px",
+        }}
+      />
+      <h3 style={{ fontSize: "16px", marginTop: "10px" }}>{product.title}</h3>
+      <p style={{ color: "#555", fontSize: "14px" }}>{product.brand}</p>
+      <p style={{ fontWeight: "bold", color: "#007bff" }}>{product.price} грн</p>
 
-      {/* зображення */}
-      <div className="flex justify-center items-center h-48 bg-gray-50 overflow-hidden">
-        <img
-          src={product.image || "/no-image.png"}
-          alt={product.title}
-          className="object-contain h-full w-auto group-hover:scale-105 transition-transform duration-300"
-          loading="lazy"
-        />
-      </div>
-
-      {/* контент */}
-      <div className="flex flex-col flex-1 p-4 text-center">
-        <h3
-          className="font-semibold text-gray-800 text-sm mb-1 line-clamp-2 hover:text-blue-600 transition-colors cursor-pointer"
-          title={product.title}
+      {!product.available && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: "10px",
+            left: "0",
+            right: "0",
+            background: "rgba(0,0,0,0.6)",
+            color: "white",
+            padding: "4px 0",
+            fontSize: "13px",
+            borderBottomLeftRadius: "10px",
+            borderBottomRightRadius: "10px",
+          }}
         >
-          {product.title}
-        </h3>
-        <p className="text-xs text-gray-500 mb-2">{product.brand}</p>
-
-        <div className="mt-auto">
-          <p className="text-lg font-bold text-blue-600 mb-3">
-            {product.price ? `${product.price.toFixed(2)} ₴` : "—"}
-          </p>
-
-          <button
-            disabled={!product.available}
-            className={`w-full py-2.5 rounded-xl font-medium text-sm transition-all ${
-              product.available
-                ? "bg-blue-600 hover:bg-blue-700 text-white"
-                : "bg-gray-200 text-gray-500 cursor-not-allowed"
-            }`}
-          >
-            {product.available ? "Додати в кошик" : "Немає в наявності"}
-          </button>
+          ❌ Немає в наявності
         </div>
-      </div>
+      )}
     </div>
   );
 }

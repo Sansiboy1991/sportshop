@@ -4,7 +4,7 @@ import { loadSupplierData } from "./loadXML.js";
 import { db } from "../db/memory.js";
 
 const DATA_DIR = "./data";
-export let lastUpdate = null; // ⬅️ ось ця змінна буде експортуватися
+export let lastUpdate = null;
 
 function timeStamp() {
   const now = new Date();
@@ -19,29 +19,28 @@ export async function refreshSupplierData() {
   const start = Date.now();
 
   try {
-    await loadSupplierData(); // це оновлює db.products і db.categories
+    await loadSupplierData(); // оновлює db.products та db.categories
     const duration = ((Date.now() - start) / 1000).toFixed(2);
 
-    console.log(`✅ [${timeStamp()}] Оновлено ${db.products.length} товарів, ${db.categories.length} категорій (${duration}s)`);
+    lastUpdate = timeStamp();
 
-    // Збереження кешу
+    console.log(`✅ [${lastUpdate}] Оновлено ${db.products.length} товарів`);
+    console.log(`💾 Кешування...`);
+
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
     fs.writeFileSync(`${DATA_DIR}/products.json`, JSON.stringify(db.products, null, 2));
     fs.writeFileSync(`${DATA_DIR}/categories.json`, JSON.stringify(db.categories, null, 2));
 
-    lastUpdate = timeStamp(); // ⬅️ фіксуємо час останнього оновлення
-    console.log(`💾 Кеш оновлено о ${lastUpdate}`);
+    console.log(`💾 Кеш оновлено о ${lastUpdate} (${duration}s)`);
   } catch (err) {
-    const duration = ((Date.now() - start) / 1000).toFixed(2);
-    console.error(`❌ [${timeStamp()}] Помилка при оновленні: ${err.message} (${duration}s)`);
+    console.error(`❌ Помилка оновлення: ${err.message}`);
 
     if (fs.existsSync(`${DATA_DIR}/products.json`)) {
       console.log("⚠️ Використовується кешована версія.");
       db.products = JSON.parse(fs.readFileSync(`${DATA_DIR}/products.json`, "utf8"));
       db.categories = JSON.parse(fs.readFileSync(`${DATA_DIR}/categories.json`, "utf8"));
-      console.log(`💾 Кеш відновлено (${db.products.length} товарів)`);
     } else {
-      console.error("🚨 Кеш відсутній! Дані недоступні.");
+      console.error("🚨 Кеш відсутній!");
     }
   }
 }
