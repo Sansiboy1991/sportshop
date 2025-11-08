@@ -1,93 +1,45 @@
-import { Router } from 'express'
-import { db } from '../db/memory.js'
+import express from 'express'
+import { getSupplierProducts } from '../utils/loadXML.js'
 
-const r = Router()
+const router = express.Router()
 
-// 🔹 /api/products
-r.get('/', (req, res) => {
-  // 🔍 ДІАГНОСТИКА ЗАПИТУ
-  console.log('===============================')
-  console.log('👉 Запит отримано:', req.query)
-  console.log('👉 Перші 3 продукти:')
-  console.log(
-    (db.products || []).slice(0, 3).map(p => ({
-      id: p.categoryId,
-      title: p.title,
-      brand: p.brand
-    }))
-  )
-  console.log('===============================')
-  const { 
-    categoryId,
-    brand,
-    available,
-    search,
-    limit = 20,
-    page = 1
+router.get('/', (req, res) => {
+  const {
+    categoryId = '',
+    brand = '',
+    available = '',
+    q = '',
+    page = '1',
+    limit = '20',
   } = req.query
-  if (!db.products || db.products.length === 0) {
-  console.log('⚠️  db.products порожня! Ймовірно, ще не завантажили XML.')
-}
-  let items = db.products || []
 
-// --- 🟩 ФІЛЬТР ПО КАТЕГОРІЇ ---
-if (categoryId) {
-  const cats = categoryId.split(',').map(x => x.trim().toLowerCase())
-  items = items.filter(p => {
-    const category = String(p.categoryName || p.categoryId || '').toLowerCase()
-    return cats.some(cat => category.includes(cat))
-  })
-}
+  const pageNum = Math.max(parseInt(page, 10) || 1, 1)
+  const limitNum = Math.min(Math.max(parseInt(limit, 10) || 20, 1), 100)
 
-  // --- 🟩 ФІЛЬТР ПО БРЕНДУ ---
+  let items = getSupplierProducts()
+
+  if (categoryId) {
+    items = items.filter(p => String(p.categoryId) === String(categoryId))
+  }
   if (brand) {
-    const brands = brand.split(',').map(b => b.trim().toLowerCase())
-    items = items.filter(p => brands.includes((p.brand || '').toLowerCase()))
+    const b = String(brand).trim().toLowerCase()
+    items = items.filter(p => (p.brand || '').toLowerCase().includes(b))
   }
-
-  // --- 🟩 ФІЛЬТР ПО НАЯВНОСТІ ---
-  if (available === 'true') {
-    items = items.filter(p => p.available)
-  }
-
-  // --- 🟩 ПОШУК ПО НАЗВІ АБО БРЕНДУ ---
-  if (search) {
-    const q = search.toLowerCase()
+  if (available === 'true') items = items.filter(p => p.available === true)
+  if (available === 'false') items = items.filter(p => p.available === false)
+  if (q) {
+    const needle = String(q).trim().toLowerCase()
     items = items.filter(p =>
-      (p.title || '').toLowerCase().includes(q) ||
-      (p.brand || '').toLowerCase().includes(q)
+      (p.title || '').toLowerCase().includes(needle) ||
+      (p.description || '').toLowerCase().includes(needle)
     )
   }
 
-  // --- 🟩 ПАГІНАЦІЯ ---
   const total = items.length
-  const start = (page - 1) * limit
-  const end = start + Number(limit)
-  const paged = items.slice(start, end)
+  const start = (pageNum - 1) * limitNum
+  const pageItems = items.slice(start, start + limitNum)
 
-  // --- 🟩 ФОРМАТ ВІДПОВІДІ ---
-  const data = paged.map(p => ({
-    vendorCode: p.vendorCode,
-    title: p.title,
-    brand: p.brand,
-    price: p.price,
-    image: p.image,
-    categoryId: p.categoryId,
-    available: p.available,
-    flavor: p.attrs?.flavor || '',
-    weight: p.attrs?.weight || '',
-    description: (p.description || '').substring(0, 250)
-  }))
-
-  res.json({
-    ok: true,
-    total,
-    page: Number(page),
-    limit: Number(limit),
-    pages: Math.ceil(total / limit),
-    items: data
-  })
+  res.json({ total, page: pageNum, limit: limitNum, items: pageItems })
 })
 
-// 🔹 Експортуємо маршрутизатор
-export default r
+export default router

@@ -1,104 +1,47 @@
-import { useEffect, useState } from 'react'
-import { fetchCategories, fetchBrands } from '../api'
-
-export default function FilterSidebar({ filters, setFilters }) {
-  const [categories, setCategories] = useState([])
-  const [brands, setBrands] = useState([])
-
-  // завантаження фільтрів
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const catRes = await fetchCategories()
-        const brandRes = await fetchBrands()
-
-        const cats = catRes.items || catRes.categories || []
-        const brs =
-          Array.isArray(brandRes.items)
-            ? brandRes.items.map(name => ({ name }))
-            : brandRes.brands?.map(name => ({ name })) || []
-
-        setCategories(cats)
-        setBrands(brs)
-      } catch (err) {
-        console.error('Помилка завантаження фільтрів:', err)
-      }
-    }
-    loadData()
-  }, [])
-
-  // зміна чекбоксів
-  const toggleFilterValue = (key, value) => {
-    setFilters(prev => {
-      const arr = prev[key] || []
-      const exists = arr.includes(value)
-      return {
-        ...prev,
-        [key]: exists ? arr.filter(v => v !== value) : [...arr, value]
-      }
-    })
-  }
-
-  // чекбокс для наявності
-  const toggleAvailable = () => {
-    setFilters(prev => ({ ...prev, available: !prev.available }))
-  }
-
+export default function FilterSidebar({ categories = [], brands = [], onFilterChange }) {
   return (
-<aside className="bg-surface p-5 rounded-xl border border-[#3C3C2E] w-64 h-fit sticky top-4 flex flex-col gap-5">
-      <h2 className="text-accent text-lg mb-3 font-semibold">Фільтри</h2>
-
-      {/* Категорії */}
-<div className="mb-5">
-  <label className="block text-sm mb-2 font-medium">Категорія</label>
-  <select
-    className="w-full bg-background border border-[#3C3C2E] p-2 rounded-md focus:outline-none focus:border-accent"
-    value={filters.categoryId || ""}
-    onChange={(e) =>
-      setFilters((prev) => ({ ...prev, categoryId: e.target.value }))
-    }
-  >
-    <option value="">Всі категорії</option>
-    {categories.map((cat) => (
-      <option key={cat.id} value={cat.id}>
-        {cat.name}
-      </option>
-    ))}
-  </select>
-</div>
-
-
-      {/* Бренди */}
-      <div className="mb-5">
-        <label className="block text-sm mb-2">Бренди</label>
-        <div className="max-h-64 overflow-y-auto space-y-1 pr-1">
-          {brands.map((b, i) => (
-            <label
-              key={i}
-              className="flex items-center gap-2 text-sm cursor-pointer hover:text-accent"
+    <aside className="hidden lg:block w-64 h-screen overflow-y-auto bg-white border-r border-gray-200 shadow-sm p-4">
+      <div>
+        <h3 className="text-gray-800 font-semibold border-b pb-2 mb-3">Категорії</h3>
+        <ul className="space-y-1">
+          {categories.map((c) => (
+            <li
+              key={c.id}
+              onClick={() => onFilterChange({ categoryId: c.id })}
+              className="px-2 py-1 rounded-md text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 cursor-pointer"
             >
-              <input
-                type="checkbox"
-                checked={filters.brand?.includes(b.name) || false}
-                onChange={() => toggleFilterValue('brand', b.name)}
-                className="accent-accent"
-              />
-              {b.name}
-            </label>
+              {c.name}
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
 
-      {/* Наявність */}
-      <div className="flex items-center gap-2">
+      <div className="mt-6">
+        <h3 className="text-gray-800 font-semibold border-b pb-2 mb-3">Бренди</h3>
+        <ul className="space-y-1">
+          {brands.map((b) => (
+            <li
+              key={b}
+              onClick={() => onFilterChange({ brand: b })}
+              className="px-2 py-1 rounded-md text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 cursor-pointer"
+            >
+              {b}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="mt-6 flex items-center space-x-2">
         <input
+          id="available"
           type="checkbox"
-          checked={filters.available || false}
-          onChange={toggleAvailable}
-          className="accent-accent w-4 h-4"
+          onChange={(e) => onFilterChange({ available: e.target.checked })}
+          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
         />
-        <span className="text-sm">Є в наявності</span>
+        <label htmlFor="available" className="text-sm text-gray-700">
+          Лише в наявності
+        </label>
       </div>
     </aside>
-  )
+  );
 }
