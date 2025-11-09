@@ -1,0 +1,10 @@
+:root {
+  --color-bg-page: #ffffff;      /* фон сайту, великі секції */
+  --color-bg-block: #f1f1f1;     /* фон блоків, карток, модалок */
+  --color-border: #fdf0f0;
+  --color-text: #ff3e3e;
+  --color-text-light: #fcfcfc;
+  --color-accent: #bead7498;
+  --color-accent-hover: #c0ba805b;
+  --color-light: #000000;
+}

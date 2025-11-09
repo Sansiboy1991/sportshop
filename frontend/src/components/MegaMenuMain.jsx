@@ -1,5 +1,5 @@
 // src/components/MegaMenuMain.jsx
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const categories = [
   { name: "Протеїни", subs: ["Сироватковий", "Ізолят", "Казеїн", "Комплексний", "Веганський", "Low Carb"] },
@@ -19,72 +19,57 @@ export default function MegaMenuMain() {
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
-    const i = setInterval(() => setCurrent((p) => (p + 1) % banners.length), 4500);
-    return () => clearInterval(i);
+    const timer = setInterval(() => setCurrent((p) => (p + 1) % banners.length), 5000);
+    return () => clearInterval(timer);
   }, []);
 
   return (
-    <div
-      className="w-full py-4"
-      style={{ background: "#f8f8f6", display: "flex", justifyContent: "center" }}
-    >
-      <div className="flex w-full max-w-[1280px] gap-4 h-[420px] px-4">
-        {/* 🔹 Категорії */}
-        <div
-          className="w-[28%] rounded-xl overflow-hidden shadow-[0_6px_18px_rgba(0,0,0,0.15)] relative"
-          style={{ background: "#2e2e2d", color: "#f8f8f6" }}
-        >
+    <section className="w-full flex justify-center bg-white py-8 border-t border-gray-200">
+      <div className="flex w-full max-w-[1280px] gap-5 px-5 h-[440px] relative">
+        {/* 🔹 Ліва панель категорій */}
+        <aside className="w-[27%] rounded-xl border border-gray-200 shadow-sm overflow-hidden bg-white relative z-20">
           {categories.map((cat, i) => (
             <div
               key={i}
+              className={`group px-5 py-3 font-medium text-[15px] border-b border-gray-100 cursor-pointer relative transition-all ${
+                active === i
+                  ? "bg-blue-50 text-blue-600"
+                  : "hover:bg-gray-50 hover:text-blue-600"
+              }`}
               onMouseEnter={() => setActive(i)}
               onMouseLeave={() => setActive(null)}
-              className={`px-5 py-3 font-semibold text-[15px] cursor-pointer border-b border-[#3b3b3a] transition-all ${
-                active === i
-                  ? "bg-[#b6a762]/20 text-[#b6a762]"
-                  : "hover:bg-[#3b3b3a] hover:text-[#d6c781]"
-              }`}
             >
               {cat.name}
-              {active === i && (
-                <div
-                  className="absolute top-0 left-[100%] bg-[#2e2e2d] border border-[#b6a762]/40 text-[#f8f8f6] 
-                             rounded-r-xl shadow-[0_8px_20px_rgba(0,0,0,0.25)] p-6 grid gap-y-2"
-                  style={{
-                    width: "max-content",
-                    minWidth: "280px",
-                    maxWidth: "500px",
-                    gridTemplateColumns:
-                      categories[i].subs.length > 8 ? "repeat(2, 1fr)" : "1fr",
-                  }}
-                >
-                  {categories[i].subs.map((sub, j) => (
-                    <div
-                      key={j}
-                      className="text-[14px] hover:text-[#b6a762] transition-all cursor-pointer"
-                    >
-                      {sub}
-                    </div>
-                  ))}
-                </div>
-              )}
+
+              {/* 🔸 Підменю (випадає збоку) */}
+              <div
+                className={`absolute top-0 left-full bg-white border border-gray-200 rounded-xl shadow-xl p-6 grid gap-y-2 min-w-[280px] max-w-[480px] transition-all duration-200 ease-out ${
+                  active === i
+                    ? "opacity-100 translate-x-0 visible"
+                    : "opacity-0 -translate-x-4 invisible"
+                }`}
+              >
+                {cat.subs.map((sub, j) => (
+                  <div
+                    key={j}
+                    className="text-[14px] text-gray-800 hover:text-blue-600 transition-colors cursor-pointer"
+                  >
+                    {sub}
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
-        </div>
+        </aside>
 
         {/* 🔸 Банер */}
-        <div
-          className="relative flex-1 rounded-xl overflow-hidden shadow-[0_6px_18px_rgba(0,0,0,0.15)]"
-          style={{
-            background: "#1e1e1e",
-          }}
-        >
+        <div className="relative flex-1 rounded-xl overflow-hidden border border-gray-200 shadow-sm">
           {banners.map((b, i) => (
             <img
               key={b.id}
               src={b.img}
               alt=""
-              className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-700 rounded-xl ${
+              className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-700 ${
                 i === current ? "opacity-100 z-10" : "opacity-0 z-0"
               }`}
             />
@@ -92,40 +77,38 @@ export default function MegaMenuMain() {
 
           {/* 🔘 Стрілки */}
           <button
-            onClick={() =>
-              setCurrent((prev) => (prev - 1 + banners.length) % banners.length)
-            }
-            className="absolute left-3 top-1/2 -translate-y-1/2 bg-[#2e2e2d]/70 text-[#b6a762] 
-                       hover:bg-[#b6a762]/30 hover:text-white transition-all w-10 h-10 
-                       flex items-center justify-center rounded-full shadow-md"
+            onClick={() => setCurrent((prev) => (prev - 1 + banners.length) % banners.length)}
+            className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/70 text-blue-600 
+                       hover:bg-blue-100 transition-all w-10 h-10 flex items-center 
+                       justify-center rounded-full shadow-md z-30"
           >
             ‹
           </button>
           <button
             onClick={() => setCurrent((prev) => (prev + 1) % banners.length)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 bg-[#2e2e2d]/70 text-[#b6a762] 
-                       hover:bg-[#b6a762]/30 hover:text-white transition-all w-10 h-10 
-                       flex items-center justify-center rounded-full shadow-md"
+            className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/70 text-blue-600 
+                       hover:bg-blue-100 transition-all w-10 h-10 flex items-center 
+                       justify-center rounded-full shadow-md z-30"
           >
             ›
           </button>
 
           {/* 🔹 Навігаційні точки */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-30">
             {banners.map((_, i) => (
               <div
                 key={i}
                 onClick={() => setCurrent(i)}
-                className={`w-2.5 h-2.5 rounded-full cursor-pointer transition-all ${
+                className={`w-3 h-3 rounded-full cursor-pointer transition-all ${
                   i === current
-                    ? "bg-[#b6a762]"
-                    : "bg-white/40 hover:bg-[#b6a762]/60"
+                    ? "bg-blue-600"
+                    : "bg-gray-300 hover:bg-blue-400"
                 }`}
               ></div>
             ))}
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
