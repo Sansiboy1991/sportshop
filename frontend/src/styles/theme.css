@@ -1,10 +1,25 @@
 :root {
-  --color-bg-page: #ffffff;      /* фон сайту, великі секції */
-  --color-bg-block: #f5f5f5;     /* фон блоків, карток, модалок */
-  --color-border: #e2e2e2;
-  --color-text: #ff3e3e;
-  --color-text-light: #fcfcfc;
-  --color-accent: #926b6a;
-  --color-accent-hover: #c0ba805b;
-  --color-light: #000000;
+  --color-primary: #00a8e8;
+  --color-primary-light: #00c2ff;
+  --color-dark: #1e293b;
+  --color-bg: #f8fafc;
+}
+
+body {
+  background-color: var(--color-bg);
+  font-family: "Manrope", sans-serif;
+  color: var(--color-dark);
+}
+@keyframes bannerMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-banner {
+  background-size: 200% 200%;
+  animation: bannerMove 5s linear infinite alternate;
 }

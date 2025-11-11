@@ -13,21 +13,14 @@ export default function HeaderTop() {
     handleResize();
     window.addEventListener("resize", handleResize);
 
-    // Закриття при кліку поза модалками
     const handleClickOutside = (event) => {
-      if (
-        aboutRef.current &&
-        !aboutRef.current.contains(event.target)
-      ) setIsAboutOpen(false);
-
-      if (
-        contactRef.current &&
-        !contactRef.current.contains(event.target)
-      ) setIsContactOpen(false);
+      if (aboutRef.current && !aboutRef.current.contains(event.target))
+        setIsAboutOpen(false);
+      if (contactRef.current && !contactRef.current.contains(event.target))
+        setIsContactOpen(false);
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-
     return () => {
       window.removeEventListener("resize", handleResize);
       document.removeEventListener("mousedown", handleClickOutside);
@@ -37,14 +30,14 @@ export default function HeaderTop() {
   if (isMobile) return null;
 
   return (
-    <div className="w-full bg-[#333333] text-[#ebebeb] border-b border-[#c2c2c2] text-sm relative z-50">
-      <div className="max-w-[1350px] mx-auto flex justify-between items-center px-5 py-2">
+    <section className="relative w-full bg-gradient-to-r from-[#E8F6FF] to-[#D9EEFF] text-[#003A70] border-b border-[#cfe9ff] text-sm z-50">
+      <div className="flex justify-between items-center px-8 py-2 max-w-[1600px] mx-auto">
         {/* 🔹 Ліва частина */}
-        <div className="flex items-center gap-6">
-          <a href="#" className="hover:text-[#4e88ca] transition">
+        <div className="flex items-center gap-6 font-medium">
+          <a href="#" className="hover:text-[#0076CE] transition">
             Доставка і оплата
           </a>
-          <a href="#" className="hover:text-[#4e88ca] transition">
+          <a href="#" className="hover:text-[#0076CE] transition">
             Повернення, обмін
           </a>
           <button
@@ -52,7 +45,7 @@ export default function HeaderTop() {
               setIsAboutOpen(!isAboutOpen);
               setIsContactOpen(false);
             }}
-            className="hover:text-[#4e88ca] transition"
+            className="hover:text-[#0076CE] transition"
           >
             Про нас
           </button>
@@ -64,11 +57,11 @@ export default function HeaderTop() {
             setIsContactOpen(!isContactOpen);
             setIsAboutOpen(false);
           }}
-          className="flex items-center gap-2 font-medium hover:text-[#4e88ca] transition"
+          className="flex items-center gap-2 font-semibold hover:text-[#0076CE] transition"
         >
           <Phone size={14} strokeWidth={1.5} />
           <span>Зв’язок з нами</span>
-          <span className="text-xs text-[#ebebeb]/70">▼</span>
+          <span className="text-xs text-[#0076CE]/70">▼</span>
         </button>
       </div>
 
@@ -76,110 +69,90 @@ export default function HeaderTop() {
       {isAboutOpen && (
         <div
           ref={aboutRef}
-          className="absolute left-5 top-[42px] w-[300px] bg-[#333333] border border-[#c2c2c2]
-                     rounded-xl shadow-[0_8px_25px_rgba(0,0,0,0.5)] z-[9999] animate-slide-down"
+          className="absolute left-8 top-[42px] w-[300px] bg-white border border-[#cfe9ff]
+                     rounded-xl shadow-[0_8px_25px_rgba(0,0,0,0.1)] animate-slide-down z-[9999]"
         >
-          <div className="flex justify-between items-center px-4 py-3 border-b border-[#c2c2c2]">
-            <h2 className="font-semibold text-[#ebebeb] text-sm tracking-wide mx-auto">
+          <div className="px-4 py-3 border-b border-[#cfe9ff] flex justify-between items-center">
+            <h2 className="font-semibold text-[#003A70] text-sm mx-auto">
               Про наш магазин
             </h2>
             <button
               onClick={() => setIsAboutOpen(false)}
-              className="text-[#ebebeb]/70 hover:text-[#4e88ca] transition absolute right-3"
+              className="text-[#0076CE]/60 hover:text-[#0076CE]"
             >
-              <X size={18} strokeWidth={1.5} />
+              <X size={18} />
             </button>
           </div>
-
-          <div className="p-4 text-[#ebebeb]/90 text-sm space-y-3">
+          <div className="p-4 text-[#003A70]/80 text-sm space-y-3">
             <p>
-              Ми спеціалізуємося на спортивному харчуванні, вітамінах та
-              аксесуарах для здорового способу життя.
+              Спортивне харчування, вітаміни та аксесуари для здорового життя.
             </p>
             <p>
-              Наша мета — зробити якісні добавки доступними кожному спортсмену в Україні.
+              Мета — зробити якісні добавки доступними кожному спортсмену.
             </p>
-            <div className="pt-3 border-t border-[#c2c2c2] text-xs text-[#ebebeb]/70">
-              <p>🕐 Пн – Нд: 10:00 – 19:00</p>
+            <div className="pt-3 border-t border-[#cfe9ff] text-xs text-[#003A70]/70">
+              <p>🕐 Пн–Нд: 10:00–19:00</p>
               <p>📍 Доставка по всій Україні</p>
             </div>
           </div>
         </div>
       )}
 
-      {/* 🔸 Модалка “Зв’язок з нами” */}
+      {/* 🔸 Модалка “Контакти” */}
       {isContactOpen && (
         <div
           ref={contactRef}
-          className="absolute right-5 top-[42px] w-[270px] bg-[#333333] border border-[#c2c2c2]
-                     rounded-xl shadow-[0_8px_25px_rgba(0,0,0,0.5)] z-[9999] animate-slide-down"
+          className="absolute right-8 top-[42px] w-[270px] bg-white border border-[#cfe9ff]
+                     rounded-xl shadow-[0_8px_25px_rgba(0,0,0,0.1)] animate-slide-down z-[9999]"
         >
-          <div className="flex justify-between items-center px-4 py-3 border-b border-[#c2c2c2]">
-            <h2 className="font-semibold text-[#ebebeb] text-sm tracking-wide mx-auto">
+          <div className="px-4 py-3 border-b border-[#cfe9ff] flex justify-between items-center">
+            <h2 className="font-semibold text-[#003A70] text-sm mx-auto">
               Зв’язок з нами
             </h2>
             <button
               onClick={() => setIsContactOpen(false)}
-              className="text-[#ebebeb]/70 hover:text-[#4e88ca] transition absolute right-3"
+              className="text-[#0076CE]/60 hover:text-[#0076CE]"
             >
-              <X size={18} strokeWidth={1.5} />
+              <X size={18} />
             </button>
           </div>
 
-          <div className="p-4 text-[#ebebeb]/90 text-sm space-y-3">
-            <div className="space-y-1 text-center">
-              <a
-                href="tel:+380673454343"
-                className="flex items-center justify-center gap-2 hover:text-[#4e88ca] transition"
-              >
-                <Phone size={15} strokeWidth={1.5} /> 067 345 43 43
+          <div className="p-4 text-[#003A70]/80 text-sm space-y-3 text-center">
+            <a
+              href="tel:+380673454343"
+              className="flex justify-center gap-2 hover:text-[#0076CE] transition"
+            >
+              <Phone size={15} /> 067 345 43 43
+            </a>
+            <a
+              href="tel:+380633524343"
+              className="flex justify-center gap-2 hover:text-[#0076CE] transition"
+            >
+              <Phone size={15} /> 063 352 43 43
+            </a>
+            <div className="flex justify-center gap-4 pt-3">
+              <a href="https://t.me/freshsport" target="_blank">
+                <Send
+                  size={18}
+                  className="text-[#0076CE] hover:scale-110 transition"
+                />
               </a>
-              <a
-                href="tel:+380633524343"
-                className="flex items-center justify-center gap-2 hover:text-[#4e88ca] transition"
-              >
-                <Phone size={15} strokeWidth={1.5} /> 063 352 43 43
+              <a href="viber://chat?number=%2B380633524343">
+                <MessageCircle
+                  size={18}
+                  className="text-[#7c4dff] hover:scale-110 transition"
+                />
               </a>
-              <a
-                href="tel:+380663544343"
-                className="flex items-center justify-center gap-2 hover:text-[#4e88ca] transition"
-              >
-                <Phone size={15} strokeWidth={1.5} /> 066 354 43 43
+              <a href="https://www.instagram.com/freshsport" target="_blank">
+                <Instagram
+                  size={18}
+                  className="text-[#E1306C] hover:scale-110 transition"
+                />
               </a>
-            </div>
-
-            <div className="pt-2 space-y-2 text-center">
-              <a
-                href="https://t.me/your_telegram"
-                target="_blank"
-                className="flex justify-center items-center gap-2 hover:text-[#4e88ca] transition"
-              >
-                <Send size={15} strokeWidth={1.5} /> Telegram
-              </a>
-              <a
-                href="viber://chat?number=%2B380633524343"
-                className="flex justify-center items-center gap-2 hover:text-[#4e88ca] transition"
-              >
-                <MessageCircle size={15} strokeWidth={1.5} /> Viber
-              </a>
-              <a
-                href="https://www.instagram.com/yourprofile/"
-                target="_blank"
-                className="flex justify-center items-center gap-2 hover:text-[#4e88ca] transition"
-              >
-                <Instagram size={15} strokeWidth={1.5} /> Instagram
-              </a>
-            </div>
-
-            <div className="pt-3 border-t border-[#c2c2c2] text-xs text-[#ebebeb]/70">
-              <p className="font-medium text-[#ebebeb]">
-                Графік опрацювання:
-              </p>
-              <p>Пн – Нд: 10:00 – 19:00</p>
             </div>
           </div>
         </div>
       )}
-    </div>
+    </section>
   );
 }
