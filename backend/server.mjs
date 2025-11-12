@@ -143,6 +143,18 @@ app.get("/api/products", (req, res) => {
   res.json({ total, page, limit, items: filtered.slice(start, end) });
 });
 
+// ✅ Отримати один товар по ID
+app.get("/api/products/:id", (req, res) => {
+  const id = req.params.id;
+  const product = db.products.find((p) => String(p.id) === String(id));
+
+  if (!product) {
+    return res.status(404).json({ error: "Product not found" });
+  }
+
+  res.json(product);
+});
+
 app.get("/api/categories", (req, res) => res.json(db.categories));
 app.get("/api/brands", (req, res) => res.json(db.brands));
 

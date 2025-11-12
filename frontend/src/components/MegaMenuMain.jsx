@@ -1,131 +1,117 @@
-// src/components/MegaMenuMain.jsx
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const categories = [
-  { name: "Протеїни", subs: ["Сироватковий", "Ізолят", "Казеїн", "Комплексний", "Веганський", "Low Carb"] },
-  { name: "Креатин", subs: ["Моногідрат", "HCL", "Мікронізований", "Капсульований", "Комплексний"] },
-  { name: "Амінокислоти", subs: ["BCAA", "EAA", "Глютамін", "Аргінін", "Таурин"] },
-  { name: "Вітаміни", subs: ["Вітамін C", "D3", "B-комплекс", "Омега-3", "Магній"] },
-];
+export default function HeroMenu() {
+  const navigate = useNavigate();
 
-const banners = [
-  { id: 1, img: "https://images.unsplash.com/photo-1579751626657-72bc17010498?q=80&w=1600&auto=format&fit=crop" },
-  { id: 2, img: "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?q=80&w=1600&auto=format&fit=crop" },
-  { id: 3, img: "https://images.unsplash.com/photo-1594737625785-cff93ef1c7c1?q=80&w=1600&auto=format&fit=crop" },
-];
+  const categories = [
+    "Протеїни",
+    "Креатин",
+    "Амінокислоти",
+    "Вітаміни та БАДи",
+    "Жироспалювачі",
+    "Передтренувальні комплекси",
+    "Суперфуди",
+    "Колаген",
+    "Пробіотики",
+  ];
 
-export default function MegaMenuMain() {
-  const [active, setActive] = useState(null);
-  const [current, setCurrent] = useState(0);
+  const promo = {
+    title: "MyProtein – Forever Fit 💪",
+    desc: "Європейський лідер у спортивному харчуванні. Відчуй якість кожного шейку!",
+    image:
+      "https://cdn.myprotein.com/image/upload/f_auto,q_auto/v1674044253/banners/uk/mp_hp_hero_proteinrange_v2.jpg",
+    link: "/brands/myprotein",
+  };
 
-  useEffect(() => {
-    const i = setInterval(() => setCurrent((p) => (p + 1) % banners.length), 4500);
-    return () => clearInterval(i);
-  }, []);
+  const popularProducts = [
+    {
+      id: 1,
+      title: "Impact Whey Protein - 1000g",
+      brand: "MyProtein",
+      price: "2 269 грн",
+      image:
+        "https://cdn.myprotein.com/image/upload/f_auto,q_auto/v1674034253/banners/uk/impact-whey-protein.png",
+    },
+    {
+      id: 2,
+      title: "Creatine Monohydrate - 500g",
+      brand: "OstroVit",
+      price: "1 049 грн",
+      image:
+        "https://static.ostrovit.com/productpictures/800_800/25572.jpg",
+    },
+  ];
 
   return (
-    <div
-      className="w-full py-4"
-      style={{ background: "#f8f8f6", display: "flex", justifyContent: "center" }}
-    >
-      <div className="flex w-full max-w-[1280px] gap-4 h-[420px] px-4">
-        {/* 🔹 Категорії */}
-        <div
-          className="w-[28%] rounded-xl overflow-hidden shadow-[0_6px_18px_rgba(0,0,0,0.15)] relative"
-          style={{ background: "#2e2e2d", color: "#f8f8f6" }}
-        >
-          {categories.map((cat, i) => (
-            <div
-              key={i}
-              onMouseEnter={() => setActive(i)}
-              onMouseLeave={() => setActive(null)}
-              className={`px-5 py-3 font-semibold text-[15px] cursor-pointer border-b border-[#3b3b3a] transition-all ${
-                active === i
-                  ? "bg-[#b6a762]/20 text-[#b6a762]"
-                  : "hover:bg-[#3b3b3a] hover:text-[#d6c781]"
-              }`}
-            >
-              {cat.name}
-              {active === i && (
-                <div
-                  className="absolute top-0 left-[100%] bg-[#2e2e2d] border border-[#b6a762]/40 text-[#f8f8f6] 
-                             rounded-r-xl shadow-[0_8px_20px_rgba(0,0,0,0.25)] p-6 grid gap-y-2"
-                  style={{
-                    width: "max-content",
-                    minWidth: "280px",
-                    maxWidth: "500px",
-                    gridTemplateColumns:
-                      categories[i].subs.length > 8 ? "repeat(2, 1fr)" : "1fr",
-                  }}
-                >
-                  {categories[i].subs.map((sub, j) => (
-                    <div
-                      key={j}
-                      className="text-[14px] hover:text-[#b6a762] transition-all cursor-pointer"
-                    >
-                      {sub}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+    <section className="w-full bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 overflow-hidden mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr_1fr]">
+        {/* 🔹 Ліва частина — Категорії */}
+        <aside className="bg-[#f8fafc] p-4 border-r border-gray-200">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900">
+            Каталог товарів
+          </h3>
+          <ul className="space-y-2 text-gray-700 text-sm">
+            {categories.map((cat, i) => (
+              <li
+                key={i}
+                className="hover:bg-[#0076CE]/10 px-3 py-2 rounded-md cursor-pointer transition"
+              >
+                {cat}
+              </li>
+            ))}
+          </ul>
+        </aside>
 
-        {/* 🔸 Банер */}
+        {/* 🔹 Центральний блок — Промо */}
         <div
-          className="relative flex-1 rounded-xl overflow-hidden shadow-[0_6px_18px_rgba(0,0,0,0.15)]"
+          className="relative bg-cover bg-center flex flex-col justify-center px-6 md:px-12 py-12 text-white"
           style={{
-            background: "#1e1e1e",
+            backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.65), rgba(0,0,0,0.25)), url(${promo.image})`,
           }}
         >
-          {banners.map((b, i) => (
-            <img
-              key={b.id}
-              src={b.img}
-              alt=""
-              className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-700 rounded-xl ${
-                i === current ? "opacity-100 z-10" : "opacity-0 z-0"
-              }`}
-            />
-          ))}
-
-          {/* 🔘 Стрілки */}
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-4 drop-shadow-lg">
+            {promo.title}
+          </h2>
+          <p className="text-white/90 max-w-[500px] mb-6">{promo.desc}</p>
           <button
-            onClick={() =>
-              setCurrent((prev) => (prev - 1 + banners.length) % banners.length)
-            }
-            className="absolute left-3 top-1/2 -translate-y-1/2 bg-[#2e2e2d]/70 text-[#b6a762] 
-                       hover:bg-[#b6a762]/30 hover:text-white transition-all w-10 h-10 
-                       flex items-center justify-center rounded-full shadow-md"
+            onClick={() => navigate(promo.link)}
+            className="bg-[#00AEEF] hover:bg-[#008FCC] px-6 py-3 rounded-xl text-white font-semibold transition shadow-lg w-fit"
           >
-            ‹
+            Перейти до бренду →
           </button>
-          <button
-            onClick={() => setCurrent((prev) => (prev + 1) % banners.length)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 bg-[#2e2e2d]/70 text-[#b6a762] 
-                       hover:bg-[#b6a762]/30 hover:text-white transition-all w-10 h-10 
-                       flex items-center justify-center rounded-full shadow-md"
-          >
-            ›
-          </button>
-
-          {/* 🔹 Навігаційні точки */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-            {banners.map((_, i) => (
-              <div
-                key={i}
-                onClick={() => setCurrent(i)}
-                className={`w-2.5 h-2.5 rounded-full cursor-pointer transition-all ${
-                  i === current
-                    ? "bg-[#b6a762]"
-                    : "bg-white/40 hover:bg-[#b6a762]/60"
-                }`}
-              ></div>
-            ))}
-          </div>
         </div>
+
+        {/* 🔹 Права частина — Популярні товари */}
+        <aside className="bg-[#f9fafc] border-l border-gray-200 p-4 flex flex-col gap-4">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Гарячі новинки 🔥
+          </h3>
+          {popularProducts.map((p) => (
+            <div
+              key={p.id}
+              className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition p-3 flex flex-col items-center text-center cursor-pointer"
+              onClick={() => navigate(`/product/${p.id}`)}
+            >
+              <img
+                src={p.image}
+                alt={p.title}
+                className="w-28 h-28 object-contain mb-3"
+              />
+              <h4 className="text-sm font-medium text-gray-800 mb-1">
+                {p.title}
+              </h4>
+              <span className="text-xs text-[#0076CE] font-semibold">
+                {p.brand}
+              </span>
+              <p className="text-gray-900 font-bold text-sm mt-1">{p.price}</p>
+              <button className="mt-2 bg-[#0076CE] hover:bg-[#005fa3] text-white text-xs px-4 py-2 rounded-lg transition">
+                Купити
+              </button>
+            </div>
+          ))}
+        </aside>
       </div>
-    </div>
+    </section>
   );
 }
